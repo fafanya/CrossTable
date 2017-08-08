@@ -20,6 +20,10 @@ namespace CrossTable
             {
                 this.BindRepeater();
             }
+            else
+            {
+                
+            }
         }
 
 
@@ -49,6 +53,10 @@ namespace CrossTable
 
         protected void Insert(object sender, EventArgs e)
         {
+
+
+            //Repeater1.DataSource = Data.Contacts;
+            Repeater1.DataBind();
             /*string name = txtName.Text;
             string country = txtCountry.Text;
             string constr = ConfigurationManager.ConnectionStrings["constr"].ConnectionString;
