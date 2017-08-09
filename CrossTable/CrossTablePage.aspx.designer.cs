@@ -10,7 +10,7 @@
 namespace CrossTable {
     
     
-    public partial class Contact {
+    public partial class CrossTablePage {
         
         /// <summary>
         /// GridView1 control.
