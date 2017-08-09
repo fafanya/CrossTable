@@ -1,4 +1,5 @@
-﻿<%--<%@ Page Language="C#" MasterPageFile="~/Site.Master"  AutoEventWireup="true" CodeBehind="CrossTablePage.aspx.cs" Inherits="CrossTable.CrossTablePage" %>
+﻿<%-- Закомментированный код можно использовать при наличии Мастерпейджа. Снизу всё закомментировать --%>
+<%--<%@ Page Language="C#" MasterPageFile="~/Site.Master"  AutoEventWireup="true" CodeBehind="CrossTablePage.aspx.cs" Inherits="CrossTable.CrossTablePage" %>
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
