@@ -232,11 +232,79 @@ namespace CrossTable
             //Page.DataBind();
         }
 
+        protected void Page_Load_(object sender, EventArgs e)
+        {
+            TemplateField tc = new TemplateField();
+            GridView1.AutoGenerateColumns = false;
+            tc.ItemTemplate = new CreateItemTemplateTextBox1("testb");
+            this.GridView1.Columns.Add(tc);
+            bind();
+        }
+
+        private void bind()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("test");
+            DataRow dr = table.NewRow();
+            dr["test"] = "aa";
+            table.Rows.Add(dr);
+            this.GridView1.DataSource = table;
+            GridView1.DataBind();
+        }
+
+        protected void btnUpdate_Click_(object sender, EventArgs e)
+        {
+            TextBox box = GridView1.Rows[0].FindControl("testb") as TextBox;
+            string val = box.Text;
+        }
+
+        public class CreateItemTemplateTextBox1 : ITemplate
+        {
+            string strColumnText;
+            string strTextBoxName;
+            bool TextMode;
+            int MaxLength = 0;
+            bool ReadOnly = false;
+            public CreateItemTemplateTextBox1(string TextBoxName)
+            {
+
+                this.strTextBoxName = TextBoxName;
+
+            }
+
+            public void InstantiateIn(Control objContainer)
+            {
+                TextBox txt = new TextBox();
+                txt.ID = strTextBoxName;
+
+                objContainer.Controls.Add(txt);
+            }
+
+            private void OnDataBinding(object sender, EventArgs e)
+            {
+                object bound_value_obj = null;
+                Control ctrl = (Control)sender;
+                IDataItemContainer data_item_container =
+                (IDataItemContainer)ctrl.NamingContainer;
+                bound_value_obj = DataBinder.Eval(data_item_container.DataItem, "test");
+                if (sender is TextBox)
+                {
+                    TextBox field_txtbox = (TextBox)sender;
+                    field_txtbox.Text = bound_value_obj.ToString();
+                }
+                else if (sender is CheckBox)
+                {
+                    CheckBox field_chbox = (CheckBox)sender;
+                    if (bound_value_obj is bool)
+                    {
+                        field_chbox.Checked = (bool)bound_value_obj;
+                    }
+                }
+            }
+        }
+
         private void BindGrid()
         {
-            GridView1.ViewStateMode = ViewStateMode.Enabled;
-
-
             OffersData offers = CrossDataHelper.LoadTestOffers();
             RequestsData requests = CrossDataHelper.LoadTestPurchseRequest();
 
@@ -323,7 +391,6 @@ namespace CrossTable
                 }
 
             }
-
 
             DataTable dt = new DataTable();
             dt.Columns.Add("Number", typeof(string));
@@ -422,79 +489,9 @@ namespace CrossTable
                 j++;
             }
 
-            /*DataRow dr = dt.NewRow();
-            dr["Number"] = (1).ToString();
-            dr["NomenclatureName"] = "Номенклатура 1";
-            dr["NomenclatureCode"] = "N1";
-            dr["TransferQuantityMO"] = "11";
-            dr["Availability"] = "111";
-            dr["TotalQuantityMO"] = "1111";
-            dr["NomenclatureNameAnalog"] = "Номенклатура 1-А";
-            dr["NomenclatureCodeAnalog"] = "N2-А";
-            dr["History"] = "H";
-            dr["AutorHeadSelect"] = false;
-            dr["ManagerSelect"] = true;
-            dr["TransferQuantity"] = "1";
-            dr["CostInRub"] = "1700";
-            dr["Total"] = "3400";
-            dr["Term"] = "успеть к аудиту";
-            dr["NomenclatureNameAnalog_2"] = "Номенклатура 1-А";
-            dr["NomenclatureCodeAnalog_2"] = "N2-А";
-            dr["History_2"] = "H";
-            dr["AutorHeadSelect_2"] = false;
-            dr["ManagerSelect_2"] = true;
-            dr["TransferQuantity_2"] = "1";
-            dr["CostInRub_2"] = "1700";
-            dr["Total_2"] = "3400";
-            dr["Term_2"] = "успеть к аудиту";
-            dt.Rows.Add(dr);
 
-            dr = dt.NewRow();
-            dr["Number"] = (1).ToString();
-            dr["NomenclatureName"] = "Номенклатура 1";
-            dr["NomenclatureCode"] = "N1";
-            dr["TransferQuantityMO"] = "11";
-            dr["Availability"] = "111";
-            dr["TotalQuantityMO"] = "1111";
-            dr["NomenclatureNameAnalog"] = "Номенклатура 1-А";
-            dr["NomenclatureCodeAnalog"] = "N2-А";
-            dr["History"] = "H";
-            dr["AutorHeadSelect"] = false;
-            dr["ManagerSelect"] = true;
-            dr["TransferQuantity"] = "1";
-            dr["CostInRub"] = "1700";
-            dr["Total"] = "3400";
-            dr["Term"] = "успеть к аудиту";
-            dt.Rows.Add(dr);
-
-            dr = dt.NewRow();
-            dr["Number"] = (2).ToString();
-            dr["NomenclatureName"] = "Номенклатура 2";
-            dr["NomenclatureCode"] = "N2";
-            dr["TransferQuantityMO"] = "2";
-            dr["Availability"] = "222";
-            dr["TotalQuantityMO"] = "2222";
-            dr["NomenclatureNameAnalog_2"] = "Номенклатура 1-А";
-            dr["NomenclatureCodeAnalog_2"] = "N2-А";
-            dr["History_2"] = "H";
-            dr["AutorHeadSelect_2"] = false;
-            dr["ManagerSelect_2"] = true;
-            dr["TransferQuantity_2"] = "1";
-            dr["CostInRub_2"] = "1700";
-            dr["Total_2"] = "3400";
-            dr["Term_2"] = "успеть к аудиту";
-            dt.Rows.Add(dr);
-
-            dr = dt.NewRow();
-            dr["Number"] = (3).ToString();
-            dr["NomenclatureName"] = "Номенклатура 3";
-            dr["NomenclatureCode"] = "N3";
-            dr["TransferQuantityMO"] = "33";
-            dr["Availability"] = "333";
-            dr["TotalQuantityMO"] = "3333";
-            dt.Rows.Add(dr);*/
-
-            GridView1.DataSource = dt;
+            ViewState["Data"] = dt;
+            GridView1.DataSource = ViewState["Data"];
             GridView1.DataBind();
 
             GridViewRow HeaderGridRow = new GridViewRow(0, 0, DataControlRowType.Header, DataControlRowState.Insert);
@@ -535,7 +532,7 @@ namespace CrossTable
 
             GridView1.Controls[0].Controls.AddAt(0, HeaderGridRow);
 
-            SpanCellsRecursive(0, 0, GridView1.Rows.Count);
+            /*SpanCellsRecursive(0, 0, GridView1.Rows.Count);
 
             for(int r = 0; r < GridView1.Rows.Count; r++)
             {
@@ -555,7 +552,7 @@ namespace CrossTable
                         }
                     }
                 }
-            }
+            }*/
         }
 
         private void SpanCellsRecursive(int columnIndex, int startRowIndex, int endRowIndex)
@@ -617,10 +614,6 @@ namespace CrossTable
                     if (rowChanged[r])
                     {
                         GridViewRow thisGridViewRow = GridView1.Rows[r];
-                        /*HiddenField hf1 = (HiddenField)thisGridViewRow.FindControl("HiddenField1");
-                        string pk = hf1.Value;
-                        TextBox tb1 = (TextBox)thisGridViewRow.FindControl("TextBox1");
-                        string name = tb1.Text;*/
                         TextBox tb2 = (TextBox)thisGridViewRow.FindControl("TransferQuantity");
                         decimal price = Convert.ToDecimal(tb2.Text);
                     }
