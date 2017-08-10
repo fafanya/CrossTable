@@ -371,6 +371,7 @@ namespace CrossTable
                         }
                     }
                 }
+                SetData(m_Offers, m_Requests);
                 Response.Redirect(Request.RawUrl);
             }
         }
