@@ -314,7 +314,7 @@ namespace CrossTable
                         TableCell currentCell = GridView1.Rows[r].Cells[c];
                         if (string.IsNullOrWhiteSpace(GetControlText(currentCell)))
                         {
-                            for (int cc = 1; cc < 8; cc++)
+                            for (int cc = 1; cc < 9; cc++)
                             {
                                 TableCell delCell = GridView1.Rows[r].Cells[c + cc];
                                 delCell.Visible = false;
