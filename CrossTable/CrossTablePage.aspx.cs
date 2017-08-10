@@ -507,16 +507,16 @@ namespace CrossTable
                     {
                         if (sender is TextBox)
                         {
-                            string data = boundValueObj.ToString();
                             TextBox tb = (TextBox)sender;
+                            string data = boundValueObj.ToString();
                             tb.Text = boundValueObj.ToString();
                         }
                         else if (sender is CheckBox)
                         {
-                            CheckBox field_chbox = (CheckBox)sender;
+                            CheckBox cb = (CheckBox)sender;
                             if (boundValueObj is bool)
                             {
-                                field_chbox.Checked = (bool)boundValueObj;
+                                cb.Checked = (bool)boundValueObj;
                             }
                         }
                         break;
