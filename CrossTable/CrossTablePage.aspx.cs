@@ -87,6 +87,9 @@ namespace CrossTable
             }
         }
 
+        /// <summary>
+        /// Настройка отображения/скрытия колонок
+        /// </summary>
         private void GetColumsVisibility()
         {
             m_MainColVisibility = new bool[] { true, true, true, true, true, true };
@@ -94,7 +97,7 @@ namespace CrossTable
         }
 
         /// <summary>
-        /// Обновление информациив источнике данных
+        /// Обновление информации в источнике данных
         /// </summary>
         /// <param name="offers">Отредактированные Offers</param>
         /// <param name="requests">Отредактированные Requests</param>
@@ -105,7 +108,6 @@ namespace CrossTable
 
         private void BindGrid()
         {
-            //---------------------------Динамическое формирование колонок Грида-------------------------------
             int secTabAmount = m_Offers.offers.GroupBy(x => x.Title).Count();
 
             for(int i = 0; i < CrossTableData.MainTableColumns.Length; i++)
@@ -162,7 +164,7 @@ namespace CrossTable
                     }
                 }
             }
-            //----------------------------------------------------------------------------------------------------
+
             DataTable dt = new DataTable();
             dt.Columns.Add("Number", typeof(string));
             dt.Columns.Add("NomenclatureName", typeof(string));
