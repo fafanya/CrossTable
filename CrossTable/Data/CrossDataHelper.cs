@@ -17,6 +17,30 @@ namespace CrossTable
         {
             var test =
                 @"{""offers"":[
+                    {""CagentID"":""2"",
+                    ""Area"":""Салово 56"",
+                    ""Category"":""B"",
+                    ""ID"":""3"",
+                    ""DeliveryType"":""Доставка"",
+                    ""Title"":""ООО \""Карго-Сервис СПБ\"""",
+                    ""PaymentType"":""Постоплата"",
+                    ""DelayDays"":""0"",
+                    ""Area"":""Уманский 29"",
+                    ""variants"":[
+                        {
+                            ""ID"":""1"",""code"":""R00192"",
+                            ""name"":""Шина 16.9-28 12PR D314 DR-4"",
+                            ""requestId"":""1"",
+                            ""TransferQuantity"":""2"",
+                            ""nomeclatureNameAnalog"": ""NameAnalog_02_1"",
+                            ""nomeclatureCodeAnalog"": ""CodeAnalog0_2_1"",
+                            ""AuthorHeadSelect"":""false"",
+                            ""ManagerSelect"":""true"",
+                            ""CostInRub"":""1700"",
+                            ""Total"":""3400"",
+                            ""Term"":""успеть к аудиту""
+                        }
+                    ]},
                     {""CagentID"":""1"",
                     ""Area"":""Заневка 59"",
                     ""Category"":""A"",
@@ -53,30 +77,6 @@ namespace CrossTable
                             ""CostInRub"":""10"",
                             ""Total"":""50"",
                             ""Term"":""""
-                        }
-                    ]},
-                    {""CagentID"":""2"",
-                    ""Area"":""Салово 56"",
-                    ""Category"":""B"",
-                    ""ID"":""3"",
-                    ""DeliveryType"":""Доставка"",
-                    ""Title"":""ООО \""Карго-Сервис СПБ\"""",
-                    ""PaymentType"":""Постоплата"",
-                    ""DelayDays"":""0"",
-                    ""Area"":""Уманский 29"",
-                    ""variants"":[
-                        {
-                            ""ID"":""1"",""code"":""R00192"",
-                            ""name"":""Шина 16.9-28 12PR D314 DR-4"",
-                            ""requestId"":""1"",
-                            ""TransferQuantity"":""2"",
-                            ""nomeclatureNameAnalog"": ""NameAnalog_02_1"",
-                            ""nomeclatureCodeAnalog"": ""CodeAnalog0_2_1"",
-                            ""AuthorHeadSelect"":""false"",
-                            ""ManagerSelect"":""true"",
-                            ""CostInRub"":""1700"",
-                            ""Total"":""3400"",
-                            ""Term"":""успеть к аудиту""
                         }
                     ]}]}";
             var offersData = JsonConvert.DeserializeObject<OffersData>(test);
