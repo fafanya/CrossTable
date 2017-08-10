@@ -14,6 +14,23 @@ namespace CrossTable
         private List<CustomRequests> m_CustomRequests;
         private List<OfferHeader> m_OfferHeaders;
 
+        private int MainVisibleColNum
+        {
+            get
+            {
+                return m_MainColVisibility.Count(x => x == true);
+            }
+        }
+        private int SecVisibleColNum
+        {
+            get
+            {
+                return m_SecColVisibility.Count(x => x == true);
+            }
+        }
+        private bool[] m_MainColVisibility;
+        private bool[] m_SecColVisibility;
+
         protected void Page_Load(object sender, EventArgs e)
         {
             GetData();
@@ -24,6 +41,7 @@ namespace CrossTable
         {
             m_Offers = CrossDataHelper.LoadTestOffers();
             m_Requests = CrossDataHelper.LoadTestPurchseRequest();
+            GetColumsVisibility();
 
             m_OfferHeaders = new List<OfferHeader>();
             List<CustomOffers> coList = new List<CustomOffers>();
@@ -69,6 +87,12 @@ namespace CrossTable
             }
         }
 
+        private void GetColumsVisibility()
+        {
+            m_MainColVisibility = new bool[] { true, true, true, true, true, true };
+            m_SecColVisibility = new bool[] { true, true, true, true, false, true, true, true, true };
+        }
+
         /// <summary>
         /// Обновление информациив источнике данных
         /// </summary>
@@ -81,54 +105,64 @@ namespace CrossTable
 
         private void BindGrid()
         {
+            //---------------------------Динамическое формирование колонок Грида-------------------------------
             int secTabAmount = m_Offers.offers.GroupBy(x => x.Title).Count();
-            foreach (ColumnInfo ci in CrossTableData.MainTableColumns)
-            {
-                TemplateField tf = new TemplateField();
-                tf.HeaderTemplate = new DynamicallyTemplatedGridViewHandler
-                    (ListItemType.Header, ci.DataHeader, String.Empty);
-                tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
-                    (ListItemType.Item, ci.DataSource, String.Empty, ci.WidthPX);
-                GridView1.Columns.Add(tf);
-            }
 
-            for (int i = 0; i < secTabAmount; i++)
+            for(int i = 0; i < CrossTableData.MainTableColumns.Length; i++)
             {
-                foreach (ColumnInfo ci in CrossTableData.SecondaryTableColumns)
+                if (m_MainColVisibility[i])
                 {
-                    string postfix = String.Empty;
-                    if (i != 0)
-                    {
-                        postfix = "_" + (i + 1).ToString();
-                    }
-
+                    ColumnInfo ci = CrossTableData.MainTableColumns[i];
                     TemplateField tf = new TemplateField();
                     tf.HeaderTemplate = new DynamicallyTemplatedGridViewHandler
                         (ListItemType.Header, ci.DataHeader, String.Empty);
-                    if (ci.DataControlType == typeof(TextBox))
-                    {
-                        tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
-                            (ListItemType.EditItem, ci.DataSource + postfix, String.Empty, ci.WidthPX);
-                    }
-                    else if (ci.DataControlType == typeof(CheckBox))
-                    {
-                        tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
-                            (ListItemType.EditItem, ci.DataSource + postfix, "CheckBox", ci.WidthPX);
-                    }
-                    else if (ci.DataControlType == typeof(Button))
-                    {
-                        tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
-                            (ListItemType.EditItem, ci.DataSource + postfix, "Button", ci.WidthPX);
-                    }
-                    else
-                    {
-                        tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
-                            (ListItemType.Item, ci.DataSource + postfix, String.Empty, ci.WidthPX);
-                    }
+                    tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
+                        (ListItemType.Item, ci.DataSource, String.Empty, ci.WidthPX);
                     GridView1.Columns.Add(tf);
                 }
             }
 
+            for (int i = 0; i < secTabAmount; i++)
+            {
+                for(int j = 0; j < CrossTableData.SecondaryTableColumns.Length; j++)
+                {
+                    if (m_SecColVisibility[j])
+                    {
+                        ColumnInfo ci = CrossTableData.SecondaryTableColumns[j];
+                        string postfix = String.Empty;
+                        if (i != 0)
+                        {
+                            postfix = "_" + (i + 1).ToString();
+                        }
+
+                        TemplateField tf = new TemplateField();
+                        tf.HeaderTemplate = new DynamicallyTemplatedGridViewHandler
+                            (ListItemType.Header, ci.DataHeader, String.Empty);
+                        if (ci.DataControlType == typeof(TextBox))
+                        {
+                            tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
+                                (ListItemType.EditItem, ci.DataSource + postfix, String.Empty, ci.WidthPX);
+                        }
+                        else if (ci.DataControlType == typeof(CheckBox))
+                        {
+                            tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
+                                (ListItemType.EditItem, ci.DataSource + postfix, "CheckBox", ci.WidthPX);
+                        }
+                        else if (ci.DataControlType == typeof(Button))
+                        {
+                            tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
+                                (ListItemType.EditItem, ci.DataSource + postfix, "Button", ci.WidthPX);
+                        }
+                        else
+                        {
+                            tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
+                                (ListItemType.Item, ci.DataSource + postfix, String.Empty, ci.WidthPX);
+                        }
+                        GridView1.Columns.Add(tf);
+                    }
+                }
+            }
+            //----------------------------------------------------------------------------------------------------
             DataTable dt = new DataTable();
             dt.Columns.Add("Number", typeof(string));
             dt.Columns.Add("NomenclatureName", typeof(string));
@@ -156,7 +190,7 @@ namespace CrossTable
                 dt.Columns.Add("Term" + postfix, typeof(string));
                 dt.Columns.Add("VariantID" + postfix, typeof(string));
             }
-
+            
             int rowNum = 1;
             foreach (CustomRequests cr in m_CustomRequests.OrderBy(x => x.InitialRequest.NomenclatureName))
             {
@@ -207,7 +241,7 @@ namespace CrossTable
             HeaderCell.BackColor = System.Drawing.Color.White;
             HeaderCell.BorderColor = System.Drawing.Color.White;
             HeaderCell.Text = "";
-            HeaderCell.ColumnSpan = 6;
+            HeaderCell.ColumnSpan = MainVisibleColNum;
             HeaderCell.ID = "1_HEADER_CELL";
             HeaderGridRow.Cells.Add(HeaderCell);
             for (int i = 0; i < secTabAmount; i++)
@@ -216,7 +250,7 @@ namespace CrossTable
                 HeaderCell.BackColor = AllowedColors.Colors[i % 4];
                 HeaderCell.BorderColor = AllowedColors.Colors[i % 4];
                 HeaderCell.Text = m_OfferHeaders[i].Row1;
-                HeaderCell.ColumnSpan = 9;
+                HeaderCell.ColumnSpan = SecVisibleColNum;
                 HeaderCell.ID = "1_HEADER_CELL" + i.ToString();
                 HeaderGridRow.Cells.Add(HeaderCell);
             }
@@ -228,7 +262,7 @@ namespace CrossTable
             HeaderCell.BackColor = System.Drawing.Color.White;
             HeaderCell.BorderColor = System.Drawing.Color.White;
             HeaderCell.Text = "";
-            HeaderCell.ColumnSpan = 6;
+            HeaderCell.ColumnSpan = MainVisibleColNum;
             HeaderCell.ID = "2_HEADER_CELL";
             HeaderGridRow.Cells.Add(HeaderCell);
             for (int i = 0; i < secTabAmount; i++)
@@ -237,7 +271,7 @@ namespace CrossTable
                 HeaderCell.BackColor = AllowedColors.Colors[i % 4];
                 HeaderCell.BorderColor = AllowedColors.Colors[i % 4];
                 HeaderCell.Text = m_OfferHeaders[i].Row2;
-                HeaderCell.ColumnSpan = 9;
+                HeaderCell.ColumnSpan = SecVisibleColNum;
                 HeaderCell.ID = "2_HEADER_CELL" + i.ToString();
                 HeaderGridRow.Cells.Add(HeaderCell);
             }
@@ -249,7 +283,7 @@ namespace CrossTable
             HeaderCell.BackColor = System.Drawing.Color.White;
             HeaderCell.BorderColor = System.Drawing.Color.White;
             HeaderCell.Text = "";
-            HeaderCell.ColumnSpan = 6;
+            HeaderCell.ColumnSpan = MainVisibleColNum;
             HeaderCell.ID = "3_HEADER_CELL";
             HeaderGridRow.Cells.Add(HeaderCell);
             for (int i = 0; i < secTabAmount; i++)
@@ -258,7 +292,7 @@ namespace CrossTable
                 HeaderCell.BackColor = AllowedColors.Colors[i % 4];
                 HeaderCell.BorderColor = AllowedColors.Colors[i % 4];
                 HeaderCell.Text = m_OfferHeaders[i].Row3;
-                HeaderCell.ColumnSpan = 9;
+                HeaderCell.ColumnSpan = SecVisibleColNum;
                 HeaderCell.ID = "3_HEADER_CELL" + i.ToString();
                 HeaderGridRow.Cells.Add(HeaderCell);
             }
@@ -270,7 +304,7 @@ namespace CrossTable
 
         private void SpanRowsRecursive(int columnIndex, int startRowIndex, int endRowIndex)
         {
-            if (columnIndex >= 6 || columnIndex >= GridView1.Columns.Count)
+            if (columnIndex >= MainVisibleColNum || columnIndex >= GridView1.Columns.Count)
                 return;
 
             TableCell groupStartCell = null;
@@ -309,17 +343,17 @@ namespace CrossTable
             {
                 for (int c = 0; c < GridView1.Columns.Count; c++)
                 {
-                    if ((c - 6) % 9 == 0)
+                    if ((c - MainVisibleColNum) % SecVisibleColNum == 0)
                     {
                         TableCell currentCell = GridView1.Rows[r].Cells[c];
                         if (string.IsNullOrWhiteSpace(GetControlText(currentCell)))
                         {
-                            for (int cc = 1; cc < 9; cc++)
+                            for (int cc = 1; cc < SecVisibleColNum; cc++)
                             {
                                 TableCell delCell = GridView1.Rows[r].Cells[c + cc];
                                 delCell.Visible = false;
                             }
-                            currentCell.ColumnSpan = 9;
+                            currentCell.ColumnSpan = SecVisibleColNum;
                         }
                     }
                 }
