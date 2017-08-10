@@ -37,6 +37,29 @@ namespace CrossTable
             BindGrid();
         }
 
+        public List<string> LoadVisibleHeaders()
+        {
+            List<string> headers = new List<string>();
+
+            headers.Add("Number");
+            headers.Add("NomenclatureName");
+            headers.Add("NomenclatureCode");
+            headers.Add("TransferQuantityMO");
+            headers.Add("Availability");
+            headers.Add("TotalQuantityMO");
+            headers.Add("NomenclatureNameAnalog");
+            headers.Add("NomenclatureCodeAnalog");
+            /*headers.Add("History");
+            headers.Add("AutorHeadSelect");
+            headers.Add("ManagerSelect");*/
+            headers.Add("TransferQuantity");
+            headers.Add("CostInRub");
+            headers.Add("Total");
+            headers.Add("Term");
+
+            return headers;
+        }
+
         private void GetData()
         {
             m_Offers = CrossDataHelper.LoadTestOffers();
@@ -92,8 +115,20 @@ namespace CrossTable
         /// </summary>
         private void GetColumsVisibility()
         {
-            m_MainColVisibility = new bool[] { true, true, true, true, true, true };
-            m_SecColVisibility = new bool[] { true, true, true, true, false, true, true, true, true };
+            m_MainColVisibility = new bool[] { false, false, false, false, false, false };
+            m_SecColVisibility = new bool[] { false, false, false, false, false, false, false, false, false };
+
+            List<string> headers = LoadVisibleHeaders();
+
+            for(int i = 0; i < CrossTableData.MainTableColumns.Length; i++)
+            {
+                m_MainColVisibility[i] = headers.Any(x => x.Equals(CrossTableData.MainTableColumns[i].DataSource));
+            }
+
+            for (int i = 0; i < CrossTableData.SecondaryTableColumns.Length; i++)
+            {
+                m_SecColVisibility[i] = headers.Any(x => x.Equals(CrossTableData.SecondaryTableColumns[i].DataSource));
+            }
         }
 
         /// <summary>
