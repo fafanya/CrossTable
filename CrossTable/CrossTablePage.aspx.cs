@@ -155,6 +155,10 @@ namespace CrossTable
                         (ListItemType.Header, ci.DataHeader, String.Empty);
                     tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
                         (ListItemType.Item, ci.DataSource, String.Empty, ci.WidthPX);
+
+                    tf.HeaderStyle.CssClass = ci.DataSource;
+                    tf.ItemStyle.CssClass = ci.DataSource;
+
                     GridView1.Columns.Add(tf);
                 }
             }
@@ -195,6 +199,10 @@ namespace CrossTable
                             tf.ItemTemplate = new DynamicallyTemplatedGridViewHandler
                                 (ListItemType.Item, ci.DataSource + postfix, String.Empty, ci.WidthPX);
                         }
+
+                        tf.HeaderStyle.CssClass = ci.DataSource;
+                        tf.ItemStyle.CssClass = ci.DataSource;
+
                         GridView1.Columns.Add(tf);
                     }
                 }
@@ -338,6 +346,7 @@ namespace CrossTable
             SpanRowsRecursive(0, 0, GridView1.Rows.Count);
             SpanColumns();
         }
+
 
         private void SpanRowsRecursive(int columnIndex, int startRowIndex, int endRowIndex)
         {

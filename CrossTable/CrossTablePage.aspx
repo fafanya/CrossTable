@@ -27,6 +27,76 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CrossTablePage</title>
+    <style type="text/css">
+        .Number,.NomenclatureName,.NomenclatureCode,.TransferQuantityMO,.Availability,.TotalQuantityMO,
+        .NomenclatureNameAnalog,.NomenclatureCodeAnalog,.History,.AutorHeadSelect,.ManagerSelect,.TransferQuantity,
+        .CostInRub,.Total,.Term{
+            white-space: pre-line;
+            word-wrap: break-word;
+        }
+
+        .Number{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .NomenclatureName{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .NomenclatureCode{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .TransferQuantityMO{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .Availability{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .TotalQuantityMO{
+            max-width: 200px;
+            font-size: 15px;
+        }
+
+        .NomenclatureNameAnalog{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .NomenclatureCodeAnalog{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .History{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .AutorHeadSelect{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .ManagerSelect{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .TransferQuantity{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .CostInRub{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .Total{
+            max-width: 200px;
+            font-size: 15px;
+        }
+        .Term{
+            max-width: 200px;
+            font-size: 15px;
+        }
+    </style>
 </head>
 <body>
     <form runat="server">
