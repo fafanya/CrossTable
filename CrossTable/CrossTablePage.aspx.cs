@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
+using System.Globalization;
 
 namespace CrossTable
 {
@@ -170,11 +171,12 @@ namespace CrossTable
                     if (m_SecColVisibility[j])
                     {
                         ColumnInfo ci = CrossTableData.SecondaryTableColumns[j];
-                        string postfix = String.Empty;
+                        string postfix = "_" + i.ToString();
+                        /*string postfix = String.Empty;
                         if (i != 0)
                         {
                             postfix = "_" + (i + 1).ToString();
-                        }
+                        }*/
 
                         TemplateField tf = new TemplateField();
                         tf.HeaderTemplate = new DynamicallyTemplatedGridViewHandler
@@ -218,11 +220,12 @@ namespace CrossTable
 
             for (int i = 0; i < secTabAmount; i++)
             {
-                string postfix = String.Empty;
+                string postfix = "_" + i.ToString();
+                /*string postfix = String.Empty;
                 if (i != 0)
                 {
                     postfix = "_" + (i + 1).ToString();
-                }
+                }*/
 
                 dt.Columns.Add("NomenclatureNameAnalog" + postfix, typeof(string));
                 dt.Columns.Add("NomenclatureCodeAnalog" + postfix, typeof(string));
@@ -235,7 +238,9 @@ namespace CrossTable
                 dt.Columns.Add("Term" + postfix, typeof(string));
                 dt.Columns.Add("VariantID" + postfix, typeof(string));
             }
-            
+
+            decimal[] totals = new decimal[secTabAmount];
+
             int rowNum = 1;
             foreach (CustomRequests cr in m_CustomRequests.OrderBy(x => x.InitialRequest.NomenclatureName))
             {
@@ -250,11 +255,13 @@ namespace CrossTable
                     dr1["TotalQuantityMO"] = cr.InitialRequest.TotalQuantityMO;
                     for (int i = 0; i < secTabAmount; i++)
                     {
-                        string postfix = String.Empty;
+                        string postfix = "_" + i.ToString();
+                        /*string postfix = String.Empty;
                         if (i != 0)
                         {
                             postfix = "_" + (i + 1).ToString();
-                        }
+                        }*/
+
                         CustomOffers co = cr.InitialOffers.FirstOrDefault(x => (x.Number == (i + 1)
                         && x.Variants.Count > l));
                         if (co != null)
@@ -269,6 +276,15 @@ namespace CrossTable
                             dr1["Total" + postfix] = co.Variants[l].Total;
                             dr1["Term" + postfix] = co.Variants[l].Term;
                             dr1["VariantID" + postfix] = co.Variants[l].ID;
+
+                            var strTotal = co.Variants[l].Total;
+                            strTotal = strTotal.Replace(" ","");
+                            strTotal = strTotal.Replace(",", ".");
+                            decimal currentTotal;
+                            if(decimal.TryParse(strTotal, out currentTotal))
+                            {
+                                totals[i] += currentTotal;
+                            }
                         }
                     }
                     dt.Rows.Add(dr1);
@@ -343,6 +359,50 @@ namespace CrossTable
             }
             GridView1.Controls[0].Controls.AddAt(0, HeaderGridRow);
 
+            HeaderGridRow = new GridViewRow(0, 0, DataControlRowType.Footer, DataControlRowState.Insert);
+            HeaderGridRow.ID = "1_FOOTER_ROW";
+            HeaderCell = new TableCell();
+            HeaderCell.BackColor = System.Drawing.Color.White;
+            HeaderCell.BorderColor = System.Drawing.Color.White;
+            HeaderCell.ColumnSpan = MainVisibleColNum;
+            HeaderCell.ID = "1_FOOTER_CELL";
+            HeaderGridRow.Cells.Add(HeaderCell);
+            for (int i = 0; i < secTabAmount; i++)
+            {
+                string postfix = "_" + i.ToString();
+                /*string postfix = String.Empty;
+                if (i != 0)
+                {
+                    postfix = "_" + (i + 1).ToString();
+                }*/
+
+                HeaderCell = new TableCell();
+                HeaderCell.BackColor = System.Drawing.Color.White;
+                HeaderCell.BorderColor = System.Drawing.Color.White;
+                HeaderCell.Text = "Итого";
+                HeaderCell.Font.Bold = true;
+                HeaderCell.HorizontalAlign = HorizontalAlign.Right;
+                HeaderCell.ColumnSpan = SecVisibleColNum - 2;
+                HeaderCell.ID = "1_FOOTER_CELL_1" + postfix;
+                HeaderGridRow.Cells.Add(HeaderCell);
+
+                HeaderCell = new TableCell();
+                HeaderCell.BackColor = System.Drawing.Color.White;
+                HeaderCell.BorderColor = System.Drawing.Color.White;
+
+                var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+                nfi.NumberGroupSeparator = " ";
+                var total = totals[i].ToString("#,0.00", nfi);
+                total = total.Replace('.', ',');
+                HeaderCell.Text = total;
+
+                HeaderCell.Font.Bold = true;
+                HeaderCell.ColumnSpan = 2;
+                HeaderCell.ID = "1_FOOTER_CELL_2" + postfix;
+                HeaderGridRow.Cells.Add(HeaderCell);
+            }
+            GridView1.Controls[0].Controls.AddAt(GridView1.Controls[0].Controls.Count - 1, HeaderGridRow);
+
             SpanRowsRecursive(0, 0, GridView1.Rows.Count);
             SpanColumns();
         }
@@ -408,9 +468,12 @@ namespace CrossTable
 
         private string GetControlText(Control control)
         {
-            if (control.Controls[0] is Label)
+            if (control.Controls.Count > 0)
             {
-                return (control.Controls[0] as Label).Text;
+                if (control.Controls[0] is Label)
+                {
+                    return (control.Controls[0] as Label).Text;
+                }
             }
             return String.Empty;
         }
@@ -422,13 +485,14 @@ namespace CrossTable
                 DataTable dt = (DataTable)ViewState["Data"];
                 for (int r = 0; r < GridView1.Rows.Count; r++)
                 {
-                    for (int ot = 0; ; ot++)
+                    for (int i = 0; ; i++)
                     {
-                        string postfix = String.Empty;
-                        if (ot != 0)
+                        string postfix = "_" + i.ToString();
+                        /*string postfix = String.Empty;
+                        if (i != 0)
                         {
-                            postfix = "_" + (ot + 1).ToString();
-                        }
+                            postfix = "_" + (i + 1).ToString();
+                        }*/
 
                         GridViewRow thisGridViewRow = GridView1.Rows[r];
                         TextBox tb = (TextBox)thisGridViewRow.FindControl("TransferQuantity" + postfix);
@@ -440,7 +504,7 @@ namespace CrossTable
                         var variantID = dt.Rows[r]["VariantID" + postfix];
                         foreach (CustomRequests cr in m_CustomRequests)
                         {
-                            foreach (CustomOffers o in cr.InitialOffers.Where(x => x.Number == ot + 1))
+                            foreach (CustomOffers o in cr.InitialOffers.Where(x => x.Number == i + 1))
                             {
                                 Variants v = o.InitialOffer.variants.FirstOrDefault(x => x.ID.Equals(variantID));
                                 if (v != null)

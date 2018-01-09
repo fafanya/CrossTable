@@ -19,7 +19,10 @@
     <asp:Button ID="btnUpdate" runat="server" onclick="btnUpdate_Click" Text="Сохранить" />
 </asp:Content>--%>
 
+
+
 <%@ Page Language="C#" AutoEventWireup="true" CodeBehind="CrossTablePage.aspx.cs" Inherits="CrossTable.CrossTablePage" %>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -97,6 +100,10 @@
             font-size: 15px;
         }
     </style>
+    <script src="Scripts/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="Scripts/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="Scripts/CrossTableOM.js" type="text/javascript"></script>
+	<script src="Scripts/jquery.inputmask.bundle.js" type="text/javascript"></script>
 </head>
 <body>
     <form runat="server">
@@ -111,6 +118,7 @@
                 <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
                 <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
                 <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+
                 <asp:ScriptReference Name="WebFormsBundle" />
             </Scripts>
         </asp:ScriptManager>
@@ -119,7 +127,7 @@
             <asp:GridView ID="GridView1" runat="server" AllowPaging="True" AutoGenerateColumns="False"
                 BackColor="White" BorderColor="#CCCCCC" BorderStyle="None" BorderWidth="1px"
                 CellPadding="3">
-                <FooterStyle BackColor="White" ForeColor="#000066" />
+                <FooterStyle BackColor="White"  Font-Bold="True" ForeColor="Black" />
                 <Columns>
                 </Columns>
                 <RowStyle ForeColor="#000066" />

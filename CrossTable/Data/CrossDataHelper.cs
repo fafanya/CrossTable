@@ -37,7 +37,7 @@ namespace CrossTable
                             ""AuthorHeadSelect"":""false"",
                             ""ManagerSelect"":""true"",
                             ""CostInRub"":""1700"",
-                            ""Total"":""3400"",
+                            ""Total"":""3 400,00"",
                             ""Term"":""успеть к аудиту""
                         }
                     ]},
@@ -61,7 +61,7 @@ namespace CrossTable
                             ""AuthorHeadSelect"":""false"",
                             ""ManagerSelect"":""false"",
                             ""CostInRub"":""5"",
-                            ""Total"":""10"",
+                            ""Total"":""10,00"",
                             ""Term"":""""
                         },
                         {
